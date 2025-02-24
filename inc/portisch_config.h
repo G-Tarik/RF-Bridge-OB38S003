@@ -16,10 +16,12 @@
 #if defined(BUCKET_SNIFFING_INCLUDED)
     // if bucket sniffing is included, we cannot fit many protocols in memory so we just allow the standard one
     // PT2260, EV1527,... original RF bridge protocol
-    #define PORTISCH_SUPPORT_PT226X_PROTOCOL
+    // #define PORTISCH_SUPPORT_PT226X_PROTOCOL
+
+    #define PORTISCH_SUPPORT_NEXUS_PROTOCOL
 
 #elif defined(MULTI_PROTOCOLS_INCLUDED)
-    
+
     // typical protocols, comment to disable
     // PT2260, EV1527,... original RF bridge protocol
     #define PORTISCH_SUPPORT_PT226X_PROTOCOL
@@ -33,13 +35,13 @@
     //#define PORTISCH_SUPPORT_Rohrmotor24_PROTOCOL
     // UNDERWATER PAR56 LED LAMP, 502266
     //#define PORTISCH_SUPPORT_PAR56_PROTOCOL
-    // Alecto WS-1200 Series Wireless Weather Station	
+    // Alecto WS-1200 Series Wireless Weather Station
     //#define PORTISCH_SUPPORT_WS_1200_PROTOCOL
     // ALDI Remote controlled wall sockets, 4x
     #define PORTISCH_SUPPORT_ALDI_4x_PROTOCOL
-    // Meteo SPxx -  Weather station (PHU Metrex)	
+    // Meteo SPxx -  Weather station (PHU Metrex)
     #define PORTISCH_SUPPORT_SP45_PROTOCOL
-    // Dooya DC90 remote    
+    // Dooya DC90 remote
     #define PORTISCH_SUPPORT_DC90_PROTOCOL
     // Digoo DG-HOSA Smart 433MHz Wireless Household Carbon Monoxide Sensor
     #define PORTISCH_SUPPORT_DG_HOSA_PROTOCOL

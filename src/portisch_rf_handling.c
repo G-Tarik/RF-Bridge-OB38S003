@@ -83,12 +83,12 @@ uint8_t Compute_CRC8_Simple_OneByte(uint8_t byteVal)
     for (i = 0; i < 8; i++)
     {
         if ((crc & 0x80) != 0)
-        { 
+        {
 			// most significant bit set, shift crc register and perform XOR operation, taking not-saved 9th set bit into account
             crc = (uint8_t)((crc << 1) ^ generator);
         }
         else
-        { 
+        {
 			// most significant bit not set, go to next bit
             crc <<= 1;
         }
@@ -145,7 +145,7 @@ bool DecodeBucket(uint8_t i, bool high_low, uint16_t duration, uint16_t *pulses,
 		}
 	}
 	else
-	{	
+	{
 		// bucket does not match bit, reset status
 		status[i].bit0_status = 0;
 	}
@@ -175,7 +175,7 @@ bool DecodeBucket(uint8_t i, bool high_low, uint16_t duration, uint16_t *pulses,
 	if ((status[i].bit0_status == 0) && (status[i].bit1_status == 0))
 	{
 		led_off();
-		
+
 		status[i].sync_status = 0;
 		status[i].bit0_status = 0;
 		status[i].bit1_status = 0;
@@ -369,7 +369,7 @@ void buffer_in(uint16_t bucket)
 
 #if 0
 //#if defined(UART_LOGGING_ENABLED)
-                
+
         //printf_tiny("%s\r\n", __LINE__);
         printf_tiny("bucket buffer over 00 \r\n");
 
@@ -377,14 +377,14 @@ void buffer_in(uint16_t bucket)
 
 		return;
 	}
-    
+
     //
 	if ( (buffer_buckets_read == 0) && ((buffer_buckets_write + 1) == BUFFER_BUCKETS_SIZE) )
 	{
 
 
 #if 0
-//#if defined(UART_LOGGING_ENABLED)        
+//#if defined(UART_LOGGING_ENABLED)
         // DEBUG: this just gets triggered no matter how large I make the buffers, can I explain if it matters or not?
         //printf_tiny("%s\r\n", __LINE__);
         printf_tiny("bbr: %c \r\n", buffer_buckets_read);
@@ -441,7 +441,7 @@ void capture_handler(uint16_t current_capture_value)
 {
     // makes code more readable
 	bool pin;
-    
+
     //FIXME: make hardware abstraction
 	//uint16_t current_capture_value = get_capture_value();
     //current_capture_value = current_capture_value / 2;
@@ -455,7 +455,7 @@ void capture_handler(uint16_t current_capture_value)
 		// FIXME: add comment
 		pin = rdata_level();
 		buffer_in(current_capture_value | ((uint16_t)(!pin) << 15));
-        
+
 #if defined(DEBUG_PINS_ENABLED)
         set_debug_pin01(pin);
 #endif
@@ -477,7 +477,7 @@ void capture_handler(uint16_t current_capture_value)
 //last_sniffing_command = in;
 //return out;
 void PCA0_DoSniffing(void)
-{    
+{
 	memset(status, 0, sizeof(PROTOCOL_STATUS) * NUM_OF_PROTOCOLS);
 
     // FIXME: need to understand if or when this was or is needed
@@ -491,7 +491,7 @@ void PCA0_DoSniffing(void)
 	// start PCA
 	pca0_run();
 
-	// 
+	//
 	// wait until timer has finished
 	//delay1ms(10);
     init_second_delay_ms(10);
@@ -501,7 +501,7 @@ void PCA0_DoSniffing(void)
     // FIXME: add comment
     // FIXME: eventually move setting radio state outside of function
     rf_state = RF_IDLE;
-    
+
 	// FIXME: add comment
 	RF_DATA_STATUS = 0;
 }
@@ -520,7 +520,7 @@ void PCA0_StopSniffing(void)
 
 	// be sure the timeout timer is stopped
 	stop_first_delay();
-    
+
     // FIXME: eventually move setting radio state outside of function
     rf_state = RF_IDLE;
 }
@@ -533,14 +533,14 @@ bool SendSingleBucket(const bool high_low, uint16_t bucket_time)
 	// switch to high_low
     set_led(high_low);
     set_tdata(high_low);
-    
+
 #if defined(DEBUG_PINS_ENABLED)
 
     // DEBUG: mirror radio transmit output to a free gpio
     set_debug_pin01(high_low);
-    
+
 #endif
-	
+
 	// FIXME: nop style delay seems to basically work (with first protocol)
 	// but bucket timings measured at receiver are inaccurate due to delay_us inaccuracy
 	//efm8_delay_us(bucket_time);
@@ -554,109 +554,109 @@ bool SendSingleBucket(const bool high_low, uint16_t bucket_time)
 //-----------------------------------------------------------------------------
 // Send generic signal based on n time bucket pairs (high/low timing)
 //-----------------------------------------------------------------------------
-void SendRFBuckets(uint16_t* buckets, uint8_t* rfdata, uint8_t data_len)
-{
-	// start transmit of the buckets with a high bucket
-	bool high_low = true;
-	bool high_low_mark = false;
-	uint8_t i;
-    
-    // help human readability
-    bool level;
-    uint16_t bucket_time;
+// void SendRFBuckets(uint16_t* buckets, uint8_t* rfdata, uint8_t data_len)
+// {
+// 	// start transmit of the buckets with a high bucket
+// 	bool high_low = true;
+// 	bool high_low_mark = false;
+// 	uint8_t i;
 
-	// check first two buckets if high/low marking is included
-	high_low_mark = (rfdata[0] & 0x88) > 0;
+//     // help human readability
+//     bool level;
+//     uint16_t bucket_time;
 
-	// transmit data
-	for (i = 0; i < data_len; i++)
-	{
-        //
-        level = high_low_mark ? (bool)(rfdata[i] >> 7) : high_low;
-        bucket_time = buckets[(rfdata[i] >> 4) & 0x07];
-		high_low = SendSingleBucket(level, bucket_time);
-        
-        //
-        level = high_low_mark ? (bool)((rfdata[i] >> 3) & 0x01) : high_low;
-        bucket_time = buckets[rfdata[i] & 0x07];
-		high_low = SendSingleBucket(level, bucket_time);
-	}
+// 	// check first two buckets if high/low marking is included
+// 	high_low_mark = (rfdata[0] & 0x88) > 0;
 
-	led_off();
-}
+// 	// transmit data
+// 	for (i = 0; i < data_len; i++)
+// 	{
+//         //
+//         level = high_low_mark ? (bool)(rfdata[i] >> 7) : high_low;
+//         bucket_time = buckets[(rfdata[i] >> 4) & 0x07];
+// 		high_low = SendSingleBucket(level, bucket_time);
+
+//         //
+//         level = high_low_mark ? (bool)((rfdata[i] >> 3) & 0x01) : high_low;
+//         bucket_time = buckets[rfdata[i] & 0x07];
+// 		high_low = SendSingleBucket(level, bucket_time);
+// 	}
+
+// 	led_off();
+// }
 
 
-void SendBuckets(uint16_t *pulses, uint8_t* start, uint8_t start_size, uint8_t* bit0, uint8_t bit0_size, uint8_t* bit1, uint8_t bit1_size, uint8_t* end, uint8_t end_size, uint8_t bit_count, uint8_t* rfdata)
-{
-	uint8_t i, a;
-	uint8_t actual_byte = 0;
-	uint8_t actual_bit = 0x80;
-    
-    bool level;
-    uint16_t bucket_time;
+// void SendBuckets(uint16_t *pulses, uint8_t* start, uint8_t start_size, uint8_t* bit0, uint8_t bit0_size, uint8_t* bit1, uint8_t bit1_size, uint8_t* end, uint8_t end_size, uint8_t bit_count, uint8_t* rfdata)
+// {
+// 	uint8_t i, a;
+// 	uint8_t actual_byte = 0;
+// 	uint8_t actual_bit = 0x80;
 
-	// transmit sync bucket(s)
-	for (i = 0; i < start_size; i++)
-    {
-        level = (start[i] & 0x08) >> 3;
-        bucket_time = pulses[start[i] & 0x07];
-		SendSingleBucket(level, bucket_time);
-    }
+//     bool level;
+//     uint16_t bucket_time;
 
-	// transmit bit bucket(s)
-	for (i = 0; i < bit_count; i++)
-	{
-		// send bit 0
-		if ((rfdata[actual_byte] & actual_bit) == 0)
-		{
-			for (a = 0; a < bit0_size; a++)
-			{
-                level = (bit0[a] & 0x08) >> 3;
-                bucket_time = pulses[bit0[a] & 0x07];
-				SendSingleBucket(level, bucket_time);
-			}
-		}
-		else
-		{	// send bit 1
-			for (a = 0; a < bit1_size; a++)
-			{
-                level = (bit1[a] & 0x08) >> 3;
-                bucket_time = pulses[bit1[a] & 0x07];
-				SendSingleBucket(level, bucket_time);
-			}
-		}
+// 	// transmit sync bucket(s)
+// 	for (i = 0; i < start_size; i++)
+//     {
+//         level = (start[i] & 0x08) >> 3;
+//         bucket_time = pulses[start[i] & 0x07];
+// 		SendSingleBucket(level, bucket_time);
+//     }
 
-		actual_bit >>= 1;
+// 	// transmit bit bucket(s)
+// 	for (i = 0; i < bit_count; i++)
+// 	{
+// 		// send bit 0
+// 		if ((rfdata[actual_byte] & actual_bit) == 0)
+// 		{
+// 			for (a = 0; a < bit0_size; a++)
+// 			{
+//                 level = (bit0[a] & 0x08) >> 3;
+//                 bucket_time = pulses[bit0[a] & 0x07];
+// 				SendSingleBucket(level, bucket_time);
+// 			}
+// 		}
+// 		else
+// 		{	// send bit 1
+// 			for (a = 0; a < bit1_size; a++)
+// 			{
+//                 level = (bit1[a] & 0x08) >> 3;
+//                 bucket_time = pulses[bit1[a] & 0x07];
+// 				SendSingleBucket(level, bucket_time);
+// 			}
+// 		}
 
-		if (actual_bit == 0)
-		{
-			actual_byte++;
-			actual_bit = 0x80;
-		}
-	}
+// 		actual_bit >>= 1;
 
-	// transmit end bucket(s)
-	for (i = 0; i < end_size; i++)
-	{
-        level = (end[i] & 0x08) >> 3;
-        bucket_time = pulses[end[i] & 0x07];
-		SendSingleBucket(level, bucket_time);
-	}
+// 		if (actual_bit == 0)
+// 		{
+// 			actual_byte++;
+// 			actual_bit = 0x80;
+// 		}
+// 	}
 
-	led_off();
-}
+// 	// transmit end bucket(s)
+// 	for (i = 0; i < end_size; i++)
+// 	{
+//         level = (end[i] & 0x08) >> 3;
+//         bucket_time = pulses[end[i] & 0x07];
+// 		SendSingleBucket(level, bucket_time);
+// 	}
 
-void SendBucketsByIndex(uint8_t index, uint8_t* rfdata)
-{
-	// helps allow sendbuckets call to be more readable
-	uint8_t start_size = PROTOCOL_DATA[index].start.size;
-	uint8_t bit0_size  = PROTOCOL_DATA[index].bit0.size;
-	uint8_t bit1_size  = PROTOCOL_DATA[index].bit1.size;
-	uint8_t end_size   = PROTOCOL_DATA[index].end.size;
-	uint8_t bitcount   = PROTOCOL_DATA[index].bit_count;
-    
-	SendBuckets(PROTOCOL_DATA[index].buckets.dat, PROTOCOL_DATA[index].start.dat, start_size, PROTOCOL_DATA[index].bit0.dat, bit0_size, PROTOCOL_DATA[index].bit1.dat, bit1_size, PROTOCOL_DATA[index].end.dat, end_size, bitcount, rfdata);
-}
+// 	led_off();
+// }
+
+// void SendBucketsByIndex(uint8_t index, uint8_t* rfdata)
+// {
+// 	// helps allow sendbuckets call to be more readable
+// 	uint8_t start_size = PROTOCOL_DATA[index].start.size;
+// 	uint8_t bit0_size  = PROTOCOL_DATA[index].bit0.size;
+// 	uint8_t bit1_size  = PROTOCOL_DATA[index].bit1.size;
+// 	uint8_t end_size   = PROTOCOL_DATA[index].end.size;
+// 	uint8_t bitcount   = PROTOCOL_DATA[index].bit_count;
+
+// 	SendBuckets(PROTOCOL_DATA[index].buckets.dat, PROTOCOL_DATA[index].start.dat, start_size, PROTOCOL_DATA[index].bit0.dat, bit0_size, PROTOCOL_DATA[index].bit1.dat, bit1_size, PROTOCOL_DATA[index].end.dat, end_size, bitcount, rfdata);
+// }
 
 
 // defined in Makefile
@@ -805,9 +805,9 @@ void SendBucketsByIndex(uint8_t index, uint8_t* rfdata)
                         {
                             // restart sync
                             rf_state = RF_IDLE;
-                            
+
 #if defined(UART_LOGGING_ENABLED)
-                
+
                             // FIXME:
                             //printf_tiny("%s\r\n", __LINE__);
                             printf_tiny("actual_byte > RF_DATA_BUFFERSIZE\r\n");

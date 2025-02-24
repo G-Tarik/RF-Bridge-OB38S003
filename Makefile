@@ -1,34 +1,34 @@
 # SPDX-License-Identifier: BSD-2-Clause
-# 
+#
 # Copyright (c) 2022 Jonathan Armstrong. All rights reserved.
-# 
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions 
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
 # are met:
-# 
-# 1. Redistributions of source code must retain the above copyright 
+#
+# 1. Redistributions of source code must retain the above copyright
 # notice, this list of conditions and the following disclaimer.
-# 
-# 2. Redistributions in binary form must reproduce the above copyright 
-# notice, this list of conditions and the following disclaimer in the 
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
 # documentation and/or other materials provided with the distribution.
-# 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
 # Prerequisites --------------------------------------------------------
 #
-# Besides make, his project requires: 
+# Besides make, his project requires:
 #
 # - sdcc
 
@@ -48,11 +48,11 @@
 # FIXME: it is possible to uncomment more than one line and it reassigns TARGET_MCU which might confuse person
 # FIXME: really microcontroller and board are different variables
 # sonoff black box
-#TARGET_MCU = EFM8BB1
+TARGET_MCU = EFM8BB1
 # low cost development board
 #TARGET_MCU = EFM8BB1LCB
 # sonoff white box
-TARGET_MCU = OB38S003
+# TARGET_MCU = OB38S003
 # BB52 Explorer Kit
 #TARGET_MCU = EFM8BB52
 
@@ -69,14 +69,14 @@ ifeq ($(TARGET_MCU), EFM8BB1)
  DEVICE_IRAM_SIZE = 256
  DEVICE_XRAM_SIZE = 256
  DEVICE_CODE_SIZE = 8192
- 
+
 else ifeq ($(TARGET_MCU), EFM8BB1LCB)
 
  MCU_FREQ_KHZ = 24500
  DEVICE_IRAM_SIZE = 256
  DEVICE_XRAM_SIZE = 256
  DEVICE_CODE_SIZE = 8192
- 
+
 else ifeq ($(TARGET_MCU), OB38S003)
 
 # for OB38S003 used in Sonoff v2.2 receivers (white color box)
@@ -84,7 +84,7 @@ else ifeq ($(TARGET_MCU), OB38S003)
  DEVICE_IRAM_SIZE = 256
  DEVICE_XRAM_SIZE = 256
  DEVICE_CODE_SIZE = 8192
- 
+
 else ifeq ($(TARGET_MCU), EFM8BB52)
 
 # for BB52 Explorer Kit
@@ -92,7 +92,7 @@ else ifeq ($(TARGET_MCU), EFM8BB52)
  DEVICE_IRAM_SIZE = 256
  DEVICE_XRAM_SIZE = 2048
  DEVICE_CODE_SIZE = 32768
- 
+
 endif
 
 
@@ -160,8 +160,8 @@ SOURCES = \
  $(DRIVER_SRC_DIR)/delay.c            \
  $(DRIVER_SRC_DIR)/hal.c              \
  $(DRIVER_SRC_DIR)/timer_interrupts.c
- 
- 
+
+
 
 OBJECT_NAMES = \
  $(notdir $(SOURCES:.c=.rel))
@@ -173,7 +173,7 @@ OBJECTS_PASSTHROUGH = \
  $(OBJECT_DIR)/passthrough_main.rel \
  $(OBJECT_DIR)/delay.rel            \
  $(OBJECT_DIR)/hal.rel
-                        
+
 OBJECTS_RCSWITCH = \
  $(OBJECT_DIR)/rcswitch_main.rel    \
  $(OBJECT_DIR)/rcswitch.rel         \
@@ -182,7 +182,7 @@ OBJECTS_RCSWITCH = \
  $(OBJECT_DIR)/delay.rel            \
  $(OBJECT_DIR)/hal.rel              \
  $(OBJECT_DIR)/timer_interrupts.rel
-                        
+
 OBJECTS_PORTISCH = \
  $(OBJECT_DIR)/portisch_main.rel        \
  $(OBJECT_DIR)/portisch_rf_handling.rel \
@@ -231,7 +231,7 @@ clean:
 	rm -f $(OBJECT_DIR)/*.rel
 	rm -f $(OBJECT_DIR)/*.rst
 	rm -f $(OBJECT_DIR)/*.sym
-    
+
 ###########################################################
 # Build
 # $@ is equal to the target (in this case %.rel)
@@ -243,25 +243,25 @@ $(TARGET_PASSTHROUGH): $(OBJECTS_PASSTHROUGH)
 	@echo "Linking $^"
 	mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) -o $@ $^
-	
+
 	# hex lines are a short, fixed length (compared with ihx) and therefore works with upload tools
 	packihx $@ > $(basename $@).hex
 	# unix style line endings (LF instead of LFCR) work with upload tools
 	dos2unix $(basename $@).hex
-	
+
 $(TARGET_RCSWITCH): $(OBJECTS_RCSWITCH)
 	@echo "Linking $^"
 	mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) -o $@ $^
-	
+
 	packihx $@ > $(basename $@).hex
 	dos2unix $(basename $@).hex
-	
+
 $(TARGET_PORTISCH): $(OBJECTS_PORTISCH)
 	@echo "Linking $^"
 	mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) -o $@ $^
-	
+
 	packihx $@ > $(basename $@).hex
 	dos2unix $(basename $@).hex
 
@@ -270,7 +270,7 @@ $(OBJECT_DIR)/%.rel: $(SOURCE_DIR)/%.c
 	@echo "Compiling $^"
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $^
-	
+
 $(OBJECT_DIR)/%.rel: $(DRIVER_SRC_DIR)/%.c
 	@echo "Compiling $^"
 	mkdir -p $(dir $@)

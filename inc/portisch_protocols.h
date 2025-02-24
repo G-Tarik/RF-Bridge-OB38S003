@@ -324,6 +324,18 @@ __code static uint8_t PROTOCOL_BIT0(H13726)[]  = { LOW(1), HIGH(0) };
 __code static uint8_t PROTOCOL_BIT1(H13726)[]  = { LOW(2), HIGH(0) };
 #endif
 
+/*
+ * Nexus Temperature&Humidity Sensor
+ */
+#if defined(PORTISCH_SUPPORT_NEXUS_PROTOCOL)
+#define NEXUS
+__code static uint16_t PROTOCOL_BUCKETS(NEXUS)[] = { 500, 1000, 2000, 4000 };
+__code static uint8_t PROTOCOL_START(NEXUS)[] = { LOW(3) };
+__code static uint8_t PROTOCOL_BIT0(NEXUS)[]  = { HIGH(0), LOW(1) };
+__code static uint8_t PROTOCOL_BIT1(NEXUS)[]  = { HIGH(0), LOW(2) };
+#endif
+
+
 __code static struct BUCKET_PROTOCOL_DATA PROTOCOL_DATA[] =
 {
 #if defined(PORTISCH_SUPPORT_PT226X_PROTOCOL)
@@ -595,6 +607,19 @@ __code static struct BUCKET_PROTOCOL_DATA PROTOCOL_DATA[] =
 			{ &PROTOCOL_START(H13726)[0], ARRAY_LENGTH(PROTOCOL_START(H13726)) },
 			{ &PROTOCOL_BIT0(H13726)[0], ARRAY_LENGTH(PROTOCOL_BIT0(H13726)) },
 			{ &PROTOCOL_BIT1(H13726)[0], ARRAY_LENGTH(PROTOCOL_BIT1(H13726)) },
+			{ NULL, 0 },
+			36
+		},
+#endif
+#if defined(PORTISCH_SUPPORT_NEXUS_PROTOCOL)
+		/*
+		 * Nexus Sensor
+		 */
+		{
+			{ &PROTOCOL_BUCKETS(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_BUCKETS(NEXUS)) },
+			{ &PROTOCOL_START(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_START(NEXUS)) },
+			{ &PROTOCOL_BIT0(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_BIT0(NEXUS)) },
+			{ &PROTOCOL_BIT1(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_BIT1(NEXUS)) },
 			{ NULL, 0 },
 			36
 		},
