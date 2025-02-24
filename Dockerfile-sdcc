@@ -1,0 +1,17 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+      wget \
+      curl \
+      make \
+      dos2unix \
+      gcc \
+      bzip2 \
+    && apt-get clean
+
+# download the file from sdcc web site
+COPY sdcc-4.5.0-amd64-unknown-linux2.5.tar.bz2 /tmp/
+RUN  cd /tmp && tar -xf sdcc-4.5.0-amd64-unknown-linux2.5.tar.bz2 && \
+     cp -r /tmp/sdcc-4.5.0/* /usr/local
