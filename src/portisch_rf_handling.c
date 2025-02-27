@@ -527,29 +527,29 @@ void PCA0_StopSniffing(void)
 
 
 // returns the inverted bit of what was passed in to high_low
-bool SendSingleBucket(const bool high_low, uint16_t bucket_time)
-{
-    // FIXME: improve this comment
-	// switch to high_low
-    set_led(high_low);
-    set_tdata(high_low);
-
-#if defined(DEBUG_PINS_ENABLED)
-
-    // DEBUG: mirror radio transmit output to a free gpio
-    set_debug_pin01(high_low);
-
-#endif
-
-	// FIXME: nop style delay seems to basically work (with first protocol)
-	// but bucket timings measured at receiver are inaccurate due to delay_us inaccuracy
-	//efm8_delay_us(bucket_time);
-	// FIXME: so maybe just use timer delays instead
-	init_second_delay_us(bucket_time / 10);
-	wait_second_delay_finished();
-
-	return !high_low;
-}
+//bool SendSingleBucket(const bool high_low, uint16_t bucket_time)
+//{
+//    // FIXME: improve this comment
+//	// switch to high_low
+//    set_led(high_low);
+//    set_tdata(high_low);
+//
+//#if defined(DEBUG_PINS_ENABLED)
+//
+//    // DEBUG: mirror radio transmit output to a free gpio
+//    set_debug_pin01(high_low);
+//
+//#endif
+//
+//	// FIXME: nop style delay seems to basically work (with first protocol)
+//	// but bucket timings measured at receiver are inaccurate due to delay_us inaccuracy
+//	//efm8_delay_us(bucket_time);
+//	// FIXME: so maybe just use timer delays instead
+//	init_second_delay_us(bucket_time / 10);
+//	wait_second_delay_finished();
+//
+//	return !high_low;
+//}
 
 //-----------------------------------------------------------------------------
 // Send generic signal based on n time bucket pairs (high/low timing)
