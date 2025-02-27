@@ -333,8 +333,8 @@ __code static uint16_t PROTOCOL_BUCKETS(NEXUS)[] = { 500, 1000, 2000, 4000 };
 __code static uint8_t PROTOCOL_START(NEXUS)[] = { LOW(3) };
 __code static uint8_t PROTOCOL_BIT0(NEXUS)[]  = { HIGH(0), LOW(1) };
 __code static uint8_t PROTOCOL_BIT1(NEXUS)[]  = { HIGH(0), LOW(2) };
+//__code static uint8_t PROTOCOL_END(NEXUS)[]   = { HIGH(0) };  // with or without the result is the same
 #endif
-
 
 __code static struct BUCKET_PROTOCOL_DATA PROTOCOL_DATA[] =
 {
@@ -613,7 +613,7 @@ __code static struct BUCKET_PROTOCOL_DATA PROTOCOL_DATA[] =
 #endif
 #if defined(PORTISCH_SUPPORT_NEXUS_PROTOCOL)
 		/*
-		 * Nexus Sensor
+		 * Nexus
 		 */
 		{
 			{ &PROTOCOL_BUCKETS(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_BUCKETS(NEXUS)) },
