@@ -76,6 +76,7 @@ typedef struct BUCKET_PROTOCOL_DATA
 	// array and array size of end buckets
 	PROTOCOL_DATA_UINT8_T end;
 	// bit count for this protocol
+	// looks like this is min bit count, because the decoded result of 0xA6 can have more bits
 	uint8_t bit_count;
 } BUCKET_PROTOCOL_DATA;
 
@@ -333,7 +334,7 @@ __code static uint16_t PROTOCOL_BUCKETS(NEXUS)[] = { 500, 1000, 2000, 4000 };
 __code static uint8_t PROTOCOL_START(NEXUS)[] = { LOW(3) };
 __code static uint8_t PROTOCOL_BIT0(NEXUS)[]  = { HIGH(0), LOW(1) };
 __code static uint8_t PROTOCOL_BIT1(NEXUS)[]  = { HIGH(0), LOW(2) };
-//__code static uint8_t PROTOCOL_END(NEXUS)[]   = { HIGH(0) };  // with or without the result is the same
+__code static uint8_t PROTOCOL_END(NEXUS)[]   = { LOW(3) };
 #endif
 
 __code static struct BUCKET_PROTOCOL_DATA PROTOCOL_DATA[] =
@@ -620,7 +621,7 @@ __code static struct BUCKET_PROTOCOL_DATA PROTOCOL_DATA[] =
 			{ &PROTOCOL_START(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_START(NEXUS)) },
 			{ &PROTOCOL_BIT0(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_BIT0(NEXUS)) },
 			{ &PROTOCOL_BIT1(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_BIT1(NEXUS)) },
-			{ NULL, 0 },
+			{ &PROTOCOL_END(NEXUS)[0], ARRAY_LENGTH(PROTOCOL_END(NEXUS)) },
 			36
 		},
 #endif
